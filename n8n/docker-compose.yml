@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: n8n
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      # URL pública do n8n (ajuste conforme seu IP ou domínio)
+      - N8N_EDITOR_BASE_URL=http://10.19.2.234:5678
+      - WEBHOOK_URL=http://10.19.2.234:5678
+      - N8N_HOST=0.0.0.0
+      - N8N_PORT=5678
+
+      # Boas práticas e avisos de depreciação resolvidos
+      - DB_SQLITE_POOL_SIZE=5
+      - N8N_RUNNERS_ENABLED=true
+      - N8N_BLOCK_ENV_ACCESS_IN_NODE=false
+      - N8N_GIT_NODE_DISABLE_BARE_REPOS=true
+
+      # Autenticação básica (opcional, mas recomendada)
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=admin
+      - N8N_BASIC_AUTH_PASSWORD=senha_super_segura
+
+      # Configurações de timezone
+      - GENERIC_TIMEZONE=America/Sao_Paulo
+
+    volumes:
+      # Volume persistente para dados do n8n
+      - n8n_data:/home/node/.n8n
+
+    # Usuário padrão (evita problemas de permissão no volume)
+    user: "1000:1000"
+
+volumes:
+  n8n_data:
+    driver: local
